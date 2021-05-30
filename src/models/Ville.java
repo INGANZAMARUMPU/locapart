@@ -5,7 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "ville")
 public class Ville {
-	    
+	
     @DatabaseField(id = true)
     private Integer id;
 
@@ -30,6 +30,10 @@ public class Ville {
 
 	public Integer getId() {
 		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getNom() {

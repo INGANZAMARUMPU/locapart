@@ -15,7 +15,7 @@ public class DataBank {
 	public Dao<Ville, String> ville_dao;
 	public Dao<Reservation, String> reservation_dao;
 	public Dao<Appartement, String> appartement_dao;
-    String databaseUrl = "jdbc:sqlite:spectacles.sqlite3";
+    String databaseUrl = "jdbc:sqlite:locapart.sqlite3";
 
 	public DataBank() {
         try {
