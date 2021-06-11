@@ -15,6 +15,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.j256.ormlite.dao.Dao;
+
 @Path("/")  
 public class Index {
 	
@@ -60,15 +62,14 @@ public class Index {
 	}
 
 	@POST 
-	@Path("appartement/{id}/louer/")
+	@Path("/louer/")
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response louerAppartemet(Reservation reservation, @PathParam("id") String appart_id) {
-		System.out.println("==========="+appart_id);
+	public Response louerAppartemet(ReservationPostSerializer reservationPostSerializer) {
+		System.out.println(reservationPostSerializer.toString());
 		try {
-			Appartement appart = new DataBank().appartement_dao.queryForId(appart_id);
-			reservation.setAppartement(appart);
-			new DataBank().reservation_dao.create(reservation);
+			Dao<Appartement, Integer> appart_dao = new DataBank().appartement_dao;
+			new DataBank().reservation_dao.create(reservationPostSerializer.toReservation(appart_dao));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(400).entity(e.getMessage()).type(MediaType.APPLICATION_JSON).build();

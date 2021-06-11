@@ -8,7 +8,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "reservation")
 public class Reservation {
 	    
-    @DatabaseField(id=true, generatedId=true, allowGeneratedIdInsert=true)
+    @DatabaseField(generatedId=true)
     private Integer id;
     
     @DatabaseField(canBeNull=false, foreign=true, foreignColumnName="id")

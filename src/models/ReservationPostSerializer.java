@@ -1,25 +1,29 @@
 package models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import com.j256.ormlite.dao.Dao;
 
 public class ReservationPostSerializer {
-    private int appartement_id;
+    private Integer appartement_id;
 	private String nom;
 	private String prenom;
 	private String date_debut;
 	private Integer nombre_jours;
 	
-	public ReservationPostSerializer(int appartement_id, String nom, String prenom, String date_debut,
-			Integer nombre_jours) {
-		super();
-		this.appartement_id = appartement_id;
-		this.nom = nom;
-		this.prenom = prenom;
-		this.date_debut = date_debut;
-		this.nombre_jours = nombre_jours;
+	public ReservationPostSerializer() {
 	}
+
+//	public ReservationPostSerializer(int appartement_id, String nom, String prenom, String date_debut, Integer nombre_jours) {
+//		super();
+//		this.appartement_id = appartement_id;
+//		this.nom = nom;
+//		this.prenom = prenom;
+//		this.date_debut = date_debut;
+//		this.nombre_jours = nombre_jours;
+//	}
 
 	public int getAppartement_id() {
 		return appartement_id;
@@ -60,6 +64,7 @@ public class ReservationPostSerializer {
 	public void setNombre_jours(Integer nombre_jours) {
 		this.nombre_jours = nombre_jours;
 	}
+
 	public Reservation toReservation(Dao<Appartement, Integer> dao) {
 		try {
 			Appartement appartement = dao.queryForId(appartement_id);
@@ -67,11 +72,22 @@ public class ReservationPostSerializer {
 			reservation.setAppartement(appartement);
 			reservation.setNom(nom);
 			reservation.setPrenom(prenom);
-			reservation.setDate_debut(new Date(date_debut));
+			
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+			Date date = formatter.parse(date_debut);
+			reservation.setDate_debut(date);
+			
 			reservation.setNombre_jours(nombre_jours);
 			return reservation;
 		} catch (Exception e) {
 			return null;
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "ReservationPostSerializer [appartement_id=" + appartement_id + ", nom=" + nom + ", prenom=" + prenom
+				+ ", date_debut=" + date_debut + ", nombre_jours=" + nombre_jours + "]";
+	}
+	
 }
