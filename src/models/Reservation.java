@@ -8,22 +8,22 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "reservation")
 public class Reservation {
 	    
-    @DatabaseField(id = true)
+    @DatabaseField(id=true, generatedId=true, allowGeneratedIdInsert=true)
     private Integer id;
     
     @DatabaseField(canBeNull=false, foreign=true, foreignColumnName="id")
     private Appartement appartement;
 
-	@DatabaseField
+	@DatabaseField(canBeNull=false)
 	private String nom;
 
-	@DatabaseField
+	@DatabaseField(canBeNull=false)
 	private String prenom;
 
-	@DatabaseField
+	@DatabaseField(canBeNull=false)
 	private Date date_debut;
 
-	@DatabaseField
+	@DatabaseField(canBeNull=false)
 	private Integer nombre_jours;
     
     public Reservation() {
@@ -80,6 +80,12 @@ public class Reservation {
 
 	public void setNombre_jours(Integer nombre_jours) {
 		this.nombre_jours = nombre_jours;
+	}
+
+	@Override
+	public String toString() {
+		return "Reservation [id=" + id + ", appartement=" + appartement + ", nom=" + nom + ", prenom=" + prenom
+				+ ", date_debut=" + date_debut + ", nombre_jours=" + nombre_jours + "]";
 	}
     
 }
