@@ -30,9 +30,11 @@ public class Appartement {
 	
 	@DatabaseField
 	private Float prix;
-	
+
 	@DatabaseField(dataType=DataType.LONG_STRING)
 	private String Details;
+	
+	private ArrayList<Integer> reservations;
 
 	public Appartement() {
 		super();
@@ -49,10 +51,11 @@ public class Appartement {
 		Details = details;
 	}
 	
-	public ArrayList<Integer> getReservations(Dao<Reservation, String> dao_res){
+	public ArrayList<Integer> getReservations(){
 		ArrayList<Integer> response = new ArrayList<>();
 
 		try {
+			Dao<Reservation, String> dao_res = new DataBank().reservation_dao;
 			ArrayList<Reservation> res = (ArrayList<Reservation>) dao_res.queryForEq("appartement_id", id);
 			for (Reservation reservation : res) {
 				for (int i = reservation.getSemaine_debut(); i < reservation.getSemaine_fin(); i++) {

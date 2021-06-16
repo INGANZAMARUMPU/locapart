@@ -58,12 +58,11 @@ public class Index {
 		List<Appartement> appartements = new ArrayList();
 		try {
 			Dao<Appartement, Integer> dao = new DataBank().appartement_dao;
-			Dao<Reservation, String> dao_res = new DataBank().reservation_dao;
 			
 			apparts = dao.queryForEq("ville_id", ville_id);
 			ArrayList<Integer> reservs = new ArrayList<>();
 			for (Appartement appartement : apparts) {
-				reservs = appartement.getReservations(dao_res);
+				reservs = appartement.getReservations();
 				if(!reservs.contains(semaine)){
 					appartements.add(appartement);
 				}
@@ -98,6 +97,15 @@ public class Index {
 		try {
 			Dao<Appartement, Integer> appart_dao = new DataBank().appartement_dao;
 			reservation = reservationPostSerializer.toReservation(appart_dao);
+			
+			Appartement appartement  = reservation.getAppartement();
+			ArrayList<Integer> reservations = appartement.getReservations();
+			for (int i = reservation.getSemaine_debut(); i < reservation.getSemaine_fin(); i++) {
+				if (reservations.contains(i)){
+					return Response.status(403).entity("la reservation contient une semaine prise").type(MediaType.APPLICATION_JSON).build();
+				}
+			}
+			
 			new DataBank().reservation_dao.create(reservation);
 			return Response.ok(reservation).build();
 		} catch (Exception e) {
