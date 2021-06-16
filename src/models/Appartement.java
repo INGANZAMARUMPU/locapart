@@ -1,7 +1,13 @@
 package models;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "appartement")
@@ -41,6 +47,23 @@ public class Appartement {
 		this.image = image;
 		this.prix = prix;
 		Details = details;
+	}
+	
+	public ArrayList<Integer> getReservations(Dao<Reservation, String> dao_res){
+		ArrayList<Integer> response = new ArrayList<>();
+
+		try {
+			ArrayList<Reservation> res = (ArrayList<Reservation>) dao_res.queryForEq("appartement_id", id);
+			for (Reservation reservation : res) {
+				for (int i = reservation.getSemaine_debut(); i < reservation.getSemaine_fin(); i++) {
+					response.add(i);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return response;
 	}
 
 	public Integer getId() {

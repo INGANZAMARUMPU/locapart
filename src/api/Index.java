@@ -1,6 +1,7 @@
 package api;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -51,29 +52,41 @@ public class Index {
 	@GET 
 	@Path("ville/{id}/appartements/{semaine}/")
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response getVilleAppartement(@PathParam("id") String ville_id, @PathParam("id") Integer semaine) {
-		
+	public Response getVilleAppartement(@PathParam("id") String ville_id, @PathParam("semaine") Integer semaine) {
+
+		List<Appartement> apparts = new ArrayList();
 		List<Appartement> appartements = new ArrayList();
 		try {
 			Dao<Appartement, Integer> dao = new DataBank().appartement_dao;
 			Dao<Reservation, String> dao_res = new DataBank().reservation_dao;
-
-			Where<Reservation, String> where_res = dao_res.queryBuilder().where();
-			where_res.ge("semaine_debut", semaine).and().lt("semaine_fin", semaine);
-			ArrayList<Reservation> reservations = (ArrayList<Reservation>) dao_res.query(where_res.prepare());
 			
-			Integer[] excludes = new Integer[reservations.size()];
-			for (int i = 0; i < excludes.length; i++) {
-				excludes[i] = reservations.get(i).getAppartement().getId();
+			apparts = dao.queryForEq("ville_id", ville_id);
+			ArrayList<Integer> reservs = new ArrayList<>();
+			for (Appartement appartement : apparts) {
+				reservs = appartement.getReservations(dao_res);
+				if(!reservs.contains(semaine)){
+					appartements.add(appartement);
+				}
 			}
-			
-			Where<Appartement, Integer> where = dao.queryBuilder().where();
-			where.eq("ville_id", ville_id).and().notIn("id", excludes);
-			appartements = (ArrayList<Appartement>) dao.query(where.prepare());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return Response.ok(appartements).build();
+	}
+
+	@GET 
+	@Path("/appartement/{id}/")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response getAppartement(@PathParam("id") Integer appart_id) {
+		
+		Appartement appartement = null;
+		try {
+			Dao<Appartement, Integer> dao = new DataBank().appartement_dao;
+			appartement = dao.queryForId(appart_id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.ok(appartement).build();
 	}
 
 	@POST 
@@ -81,14 +94,15 @@ public class Index {
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response louerAppartemet(ReservationPostSerializer reservationPostSerializer) {
-		System.out.println(reservationPostSerializer.toString());
+		Reservation reservation;
 		try {
 			Dao<Appartement, Integer> appart_dao = new DataBank().appartement_dao;
-			new DataBank().reservation_dao.create(reservationPostSerializer.toReservation(appart_dao));
+			reservation = reservationPostSerializer.toReservation(appart_dao);
+			new DataBank().reservation_dao.create(reservation);
+			return Response.ok(reservation).build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(400).entity(e.getMessage()).type(MediaType.APPLICATION_JSON).build();
 		}
-		return Response.ok("{\"message\":\"Reservation réussie\"}").build();
 	}
 }   

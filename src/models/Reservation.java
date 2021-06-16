@@ -28,7 +28,7 @@ public class Reservation {
     public Reservation() {
     }
 
-	public Reservation(Appartement appartement, String nom, String prenom, Integer semaine, Integer nombre) {
+	public Reservation(Appartement appartement, String nom, String prenom, Integer semaine_debut, Integer semaine_fin) {
 		super();
 		this.appartement = appartement;
 		this.nom = nom;

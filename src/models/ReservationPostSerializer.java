@@ -52,10 +52,6 @@ public class ReservationPostSerializer {
 		this.nombre = nombre;
 	}
 
-	public void setAppartement_id(Integer appartement_id) {
-		this.appartement_id = appartement_id;
-	}
-
 	public Reservation toReservation(Dao<Appartement, Integer> dao) {
 		try {
 			Appartement appartement = dao.queryForId(appartement_id);
