@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.Where;
 
 @Path("/")  
 public class Index {
@@ -30,7 +31,7 @@ public class Index {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return Response.ok(villes).header("Access-Control-Allow-Origin", "*").build();
+		return Response.ok(villes).build();
 	}
 
 	@GET 
@@ -44,21 +45,35 @@ public class Index {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return Response.ok(ville).header("Access-Control-Allow-Origin", "*").build();
+		return Response.ok(ville).build();
 	}
 
 	@GET 
-	@Path("ville/{id}/appartements/")
+	@Path("ville/{id}/appartements/{semaine}/")
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response getVilleAppartement(@PathParam("id") String ville_id) {
+	public Response getVilleAppartement(@PathParam("id") String ville_id, @PathParam("id") Integer semaine) {
 		
 		List<Appartement> appartements = new ArrayList();
 		try {
-			appartements = new DataBank().appartement_dao.queryForEq("ville_id", ville_id);
+			Dao<Appartement, Integer> dao = new DataBank().appartement_dao;
+			Dao<Reservation, String> dao_res = new DataBank().reservation_dao;
+
+			Where<Reservation, String> where_res = dao_res.queryBuilder().where();
+			where_res.ge("semaine_debut", semaine).and().lt("semaine_fin", semaine);
+			ArrayList<Reservation> reservations = (ArrayList<Reservation>) dao_res.query(where_res.prepare());
+			
+			Integer[] excludes = new Integer[reservations.size()];
+			for (int i = 0; i < excludes.length; i++) {
+				excludes[i] = reservations.get(i).getAppartement().getId();
+			}
+			
+			Where<Appartement, Integer> where = dao.queryBuilder().where();
+			where.eq("ville_id", ville_id).and().notIn("id", excludes);
+			appartements = (ArrayList<Appartement>) dao.query(where.prepare());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return Response.ok(appartements).header("Access-Control-Allow-Origin", "*").build();
+		return Response.ok(appartements).build();
 	}
 
 	@POST 
@@ -74,6 +89,6 @@ public class Index {
 			e.printStackTrace();
 			return Response.status(400).entity(e.getMessage()).type(MediaType.APPLICATION_JSON).build();
 		}
-		return Response.ok("{\"message\":\"Reservation réussie\"}").header("Access-Control-Allow-Origin", "*").build();
+		return Response.ok("{\"message\":\"Reservation réussie\"}").build();
 	}
 }   

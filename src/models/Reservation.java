@@ -1,5 +1,4 @@
 package models;
-import java.util.Date;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -21,25 +20,29 @@ public class Reservation {
 	private String prenom;
 
 	@DatabaseField(canBeNull=false)
-	private Date date_debut;
+	private Integer semaine_debut;
 
 	@DatabaseField(canBeNull=false)
-	private Integer nombre_jours;
+	private Integer semaine_fin;
     
     public Reservation() {
     }
 
-	public Reservation(Appartement appartement, String nom, String prenom, Date date_debut, Integer nombre_jours) {
+	public Reservation(Appartement appartement, String nom, String prenom, Integer semaine, Integer nombre) {
 		super();
 		this.appartement = appartement;
 		this.nom = nom;
 		this.prenom = prenom;
-		this.date_debut = date_debut;
-		this.nombre_jours = nombre_jours;
+		this.semaine_debut = semaine_debut;
+		this.semaine_fin = semaine_fin;
 	}
 
 	public Integer getId() {
 		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public Appartement getAppartement() {
@@ -66,26 +69,22 @@ public class Reservation {
 		this.prenom = prenom;
 	}
 
-	public Date getDate_debut() {
-		return date_debut;
+	public Integer getSemaine_debut() {
+		return semaine_debut;
 	}
 
-	public void setDate_debut(Date date_debut) {
-		this.date_debut = date_debut;
+	public void setSemaine_debut(Integer semaine_debut) {
+		this.semaine_debut = semaine_debut;
 	}
 
-	public Integer getNombre_jours() {
-		return nombre_jours;
+	public Integer getSemaine_fin() {
+		return semaine_fin;
 	}
 
-	public void setNombre_jours(Integer nombre_jours) {
-		this.nombre_jours = nombre_jours;
+	public void setSemaine_fin(Integer semaine_fin) {
+		this.semaine_fin = semaine_fin;
 	}
 
-	@Override
-	public String toString() {
-		return "Reservation [id=" + id + ", appartement=" + appartement + ", nom=" + nom + ", prenom=" + prenom
-				+ ", date_debut=" + date_debut + ", nombre_jours=" + nombre_jours + "]";
-	}
+	
     
 }

@@ -13,20 +13,23 @@ public class Ville {
 	private String nom;
 
 	@DatabaseField
-	private Double longitude;
+	private String longitude;
 
 	@DatabaseField
-	private Double latitude;
+	private String latitude;
     
     public Ville() {
     }
+    
 
-	public Ville(String nom, Double longitude, Double latitude) {
+	public Ville(Integer id, String nom, String longitude, String latitude) {
 		super();
+		this.id = id;
 		this.nom = nom;
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
+
 
 	public Integer getId() {
 		return id;
@@ -44,20 +47,21 @@ public class Ville {
 		this.nom = nom;
 	}
 
-	public Double getLongitude() {
+	public String getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(Double longitude) {
+	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
 
-	public Double getLatitude() {
+	public String getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(Double latitude) {
+	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
-    
+
+	
 }
